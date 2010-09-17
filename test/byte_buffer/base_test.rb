@@ -45,7 +45,7 @@ class BaseTest < Test::Unit::TestCase
       assert_equal "this is some file with foobar data in it.\nanother foobar line.\n", bb.buffer
     end
 
-    should "throw an error  with an unkonw data type" do
+    should "throw an error with an unkonw data type" do
       klass = Class.new
       assert_raises(ByteBuffer::Errors::UnsupportedData) do
         ByteBuffer.new(klass)
@@ -69,42 +69,6 @@ class BaseTest < Test::Unit::TestCase
       assert 0, bb.pos
       bb.fastforward!
       assert bb.size, bb.pos
-    end
-
-    should "write to buffer with no content and end in write mode" do
-      bb = ByteBuffer.new
-      bb.write "foobar"
-
-      assert bb.is_writing?
-      assert !bb.is_reading?
-      assert_equal "foobar", bb.buffer
-    end
-
-    should "write to buffer with content and end in write mode" do
-      bb = ByteBuffer.new("foo")
-      bb.write "bar"
-
-      assert bb.is_writing?
-      assert !bb.is_reading?
-      assert_equal "foobar", bb.buffer
-    end
-
-    should "write to buffer with bits and end in write mode" do
-      bb = ByteBuffer.new
-      bb.write_bits 8, 70
-
-      assert "F", bb.buffer
-
-      bb.write_bits 8, 0x4F
-      bb.write_bits 8, 79
-
-      assert "FOO", bb.buffer
-
-      bb.write_bits 8, [66, 0x41, 82]
-
-      assert "FOOBAR", bb.buffer
-      assert bb.is_writing?
-      assert !bb.is_reading?
     end
   end
 end

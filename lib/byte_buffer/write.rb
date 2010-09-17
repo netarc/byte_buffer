@@ -3,7 +3,7 @@ class ByteBuffer
     if is_writing?
       reset_bit_byte if reset_bit_byte
     elsif is_reading?
-      raise CannotWriteInReadMode
+      raise Errors::CannotWriteInReadMode.new
     else
       @mode = :write
     end
@@ -23,6 +23,10 @@ class ByteBuffer
     if value.is_a?(Array)
       value.each {|v| write_bits bits_towrite, v }
       return self
+    end
+
+    unless value.is_a?(Integer)
+      raise Errors::ExpectedIntegerSeries.new(:klass => value.class)
     end
 
     value = value & ((1 << bits_towrite) - 1)
