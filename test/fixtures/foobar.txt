@@ -1,0 +1,2 @@
+this is some file with foobar data in it.
+another foobar line.

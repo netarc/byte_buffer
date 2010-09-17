@@ -1,6 +1,7 @@
 # Add this folder to the load path for "test_helper"
 $:.unshift(File.dirname(__FILE__))
 
+require 'rubygems'
 require 'byte_buffer'
 require 'contest'
 require 'mocha'
@@ -14,4 +15,7 @@ rescue LoadError
 end
 
 class Test::Unit::TestCase
+  def fixtures_path
+    ByteBuffer.source_root.join("test", "fixtures")
+  end
 end

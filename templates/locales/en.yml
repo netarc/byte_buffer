@@ -1,0 +1,8 @@
+en:
+  byte_buffer:
+
+#-------------------------------------------------------------------------------
+# Translations for exception classes
+#-------------------------------------------------------------------------------
+    errors:
+      unsupported_data: "The supplied data was not in a recognized format: #{klass}"
