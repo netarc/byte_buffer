@@ -1,4 +1,4 @@
-require File.expand_path("../lib/byte_buffer/version", __FILE__)
+require File.expand_path("../lib/byte_buffer", __FILE__)
 
 Gem::Specification.new do |s|
   s.name          = "byte_buffer"
