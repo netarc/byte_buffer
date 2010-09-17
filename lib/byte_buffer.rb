@@ -30,26 +30,32 @@ class ByteBuffer
 
 
   def initialize(data=nil)
-    if data.is_a?(String)
-      @buffer = data
-    elsif data.is_a?(File)
-      @buffer = data.read
-    elsif data.is_a?(ByteBuffer)
-      @buffer = data.buffer
-    elsif data.is_a?(Array)
-      @buffer = data.join
-    elsif data.is_a?(NilClass)
-      @buffer = ""
-    else
-      raise Errors::UnsupportedData.new(:klass => data.class)
-    end
-
+    @buffer = format_data(data)
     @endian = @@endian
     @pos = 0
     @bit_pos = 0
     @bit_byte = nil
     @mode = nil
   end
+
+  def format_data(data)
+    if data.is_a?(String)
+      return data
+    elsif data.is_a?(File)
+      return data.read
+    elsif data.is_a?(ByteBuffer)
+      return data.buffer
+    elsif data.is_a?(Array)
+      return data.join
+    elsif data.is_a?(NilClass)
+      return ""
+    elsif data.is_a?(Fixnum)
+      return data.chr
+    else
+      raise Errors::UnsupportedData.new(:klass => data.class)
+    end
+  end
+  private :format_data
 
   def buffer
     @buffer

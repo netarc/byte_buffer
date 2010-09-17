@@ -5,4 +5,6 @@ en:
 # Translations for exception classes
 #-------------------------------------------------------------------------------
     errors:
-      unsupported_data: "The supplied data was not in a recognized format: #{klass}"
+      unsupported_data: "The supplied data was not in a recognized format: %{klass}"
+      cannot_write_in_read_mode: Cannot write to Buffer while in a read state.
+      cannot_read_in_write_mode: Cannot read from Buffer while in a write state.
