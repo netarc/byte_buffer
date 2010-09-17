@@ -56,13 +56,19 @@ class BaseTest < Test::Unit::TestCase
   context "operations" do
     should "empty buffer and reset mode on hard reset" do
       bb = ByteBuffer.new("some foobar data")
-      assert "some foobar data", bb.buffer
-
       bb.reset!
 
       assert "", bb.buffer
       assert !bb.is_reading?, "should not be in read mode"
       assert !bb.is_writing?, "should not be in write mode"
+    end
+
+    should "be at end of buffer on a fast-forward" do
+      bb = ByteBuffer.new("some foobar data")
+
+      assert 0, bb.pos
+      bb.fastforward!
+      assert bb.size, bb.pos
     end
   end
 end
