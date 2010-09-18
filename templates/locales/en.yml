@@ -9,4 +9,5 @@ en:
       cannot_read_in_write_mode: Cannot read from Buffer while in a write state.
       expected_integer: "Expected argument to be an Integer not `%{klass}`"
       expected_integer_seriers: "Expected argument to be an Integer or Array of Integers not `%{klass}`"
+      type_already_defined: "Type #{type_name} has already been defined"
       unsupported_data: "The supplied data was not in a recognized format: %{klass}"

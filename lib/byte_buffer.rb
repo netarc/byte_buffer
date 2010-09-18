@@ -6,14 +6,9 @@ class ByteBuffer
   attr_accessor :endian
   attr_reader :pos
 
-  @@types = {}
   @@endian = :little_endian
 
   class << self
-    def known_types
-      @@types.keys
-    end
-
     def endian=(v)
       @@endian = (v == :little_endian ? :little_endian : :big_endian)
     end
@@ -117,6 +112,7 @@ end
 # Default I18n to load the en locale
 I18n.load_path << File.expand_path("../../templates/locales/en.yml", __FILE__)
 
+require 'byte_buffer/exts'
 require 'byte_buffer/read'
 require 'byte_buffer/write'
 require 'byte_buffer/version'

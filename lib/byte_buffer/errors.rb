@@ -60,6 +60,11 @@ class ByteBuffer
       error_key(:expected_integer_series)
     end
 
+    class TypeAlreadyDefined < ByteBufferError
+      status_code(15)
+      error_key(:data_type_already_defined)
+    end
+
     class UnsupportedData < ByteBufferError
       status_code(20)
       error_key(:unsupported_data)
