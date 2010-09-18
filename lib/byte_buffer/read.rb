@@ -19,17 +19,17 @@ class ByteBuffer
     end
 
     if bytes_to_read <= 0
-      ret = @buffer[@pos..-1]
+      data = @buffer[@pos..-1]
       @pos = @buffer.length
     else
-      ret = @buffer[@pos...@pos+bytes_to_read] || ""
+      data = @buffer[@pos...@pos+bytes_to_read] || ""
       # Didn't have enough to read? pad it out with zeroes
-      while pad_bytes and ret.length < bytes_to_read
-        ret <<= "\x00"
+      while pad_bytes and data.length < bytes_to_read
+        data <<= "\x00"
       end
       @pos += bytes_to_read
     end
-    return ret
+    return Result.new data, :endian => @endian
   end
 
   def read_byte_val(allow_nil=true)
@@ -40,7 +40,7 @@ class ByteBuffer
       return nil if allow_nil
       return 0
     end
-    return v[0]
+    return v.to_i
   end
 
   def read_bits(bits_toread)

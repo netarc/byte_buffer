@@ -18,4 +18,10 @@ class Test::Unit::TestCase
   def fixtures_path
     ByteBuffer.source_root.join("test", "fixtures")
   end
+
+  # We flip the == check so we can use the custom ByteBuffer::Result == method
+  def assert_equal(expected, actual, message=nil)
+    full_message = build_message(message, "<?> expected but was\n<?>.\n", expected, actual)
+    assert_block(full_message) { actual == expected }
+  end
 end

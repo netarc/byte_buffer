@@ -2,6 +2,7 @@ require 'i18n'
 
 class ByteBuffer
   autoload :Errors,        'byte_buffer/errors'
+  autoload :Result,        'byte_buffer/result'
 
   attr_accessor :endian
   attr_reader :pos

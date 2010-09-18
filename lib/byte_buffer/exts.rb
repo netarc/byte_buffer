@@ -37,7 +37,7 @@ class ByteBuffer
   # string is greedy, it will eat the whole buffer on a read
   define_type :string do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read
+      byte_buffer.read.to_s
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data
@@ -50,8 +50,7 @@ class ByteBuffer
       result = ""
       while true
         byte = byte_buffer.read(1).to_s
-        break if byte.empty?
-        break if byte == "\x00"
+        break if byte.empty? || byte == "\x00"
         result <<= byte
       end
       result
@@ -59,6 +58,96 @@ class ByteBuffer
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data
       byte_buffer.write 0x00
+    end
+  end
+
+  # 1-Byte Numbers
+  define_type :byte do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(1)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('C')
+    end
+  end
+  define_type :char do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(1)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('c')
+    end
+  end
+
+  # 2-Byte Numbers
+  define_type :word do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(2)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('S')
+    end
+  end
+  define_type :short do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(2)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('s')
+    end
+  end
+
+  # 4-Byte Numbers
+  define_type :dword do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(4)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('L')
+    end
+  end
+  define_type :long do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(4)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('l')
+    end
+  end
+
+  # 8-Byte Numbers
+  define_type :dwordlong do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(8)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('Q')
+    end
+  end
+  define_type :longlong do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(8)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_i].pack('q')
+    end
+  end
+
+  # Floats
+  define_type :float do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(4)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_f].pack('e')
+    end
+  end
+  define_type :double do |type|
+    type.read = Proc.new do |byte_bufer, args|
+      byte_buffer.read(8)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write [data.to_f].pack('E')
     end
   end
 

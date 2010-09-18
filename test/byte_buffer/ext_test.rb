@@ -4,7 +4,7 @@ class ExtTest < Test::Unit::TestCase
   context "string extension" do
     should "read" do
       bb = ByteBuffer.new("FOOBAR")
-      assert_equal "FOOBAR", bb.read_string(1, 2)
+      assert_equal "FOOBAR", bb.read_string
     end
 
     should "write" do
