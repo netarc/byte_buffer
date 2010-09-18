@@ -46,7 +46,15 @@ class ByteBuffer
     elsif data.is_a?(NilClass)
       return ""
     elsif data.is_a?(Fixnum)
-      return data.chr
+      if data <= 255
+        return [data].pack('c')
+      elsif data <= 65535
+        return [data].pack('s')
+      elsif data
+        return [data].pack('l')
+      end
+    elsif data.is_a?(Bignum)
+      return [data].pack('Q')
     else
       raise Errors::UnsupportedData.new(:klass => data.class)
     end

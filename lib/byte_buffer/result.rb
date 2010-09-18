@@ -2,7 +2,13 @@ class ByteBuffer
   class Result
     def initialize(data, *args)
       args||={}
-      @data = data.is_a?(String) ? data.unpack('C*') : []
+      if data.is_a?(String)
+        @data = data.unpack('C*')
+      elsif data.is_a?(Array)
+        @data = data
+      else
+        @data = []
+      end
     end
 
     def size
@@ -81,7 +87,7 @@ class ByteBuffer
         self.to_a == other.to_a
       elsif other.is_a?(String)
         self.to_s == other.to_s
-      elsif other.is_a?(Fixnum)
+      elsif other.is_a?(Fixnum) || other.is_a?(Bignum)
         self.to_i == other.to_i
       elsif other.is_a?(Float)
         self.to_f == other.to_f
