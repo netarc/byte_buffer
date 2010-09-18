@@ -55,5 +55,27 @@ class ResultTest < Test::Unit::TestCase
       assert_equal 12.3456789, result.to_f(:endian => :little_endian)
       assert_in_delta -6.93563621441161e-141, result.to_f(:endian => :big_endian), 0.1e-141
     end
+
+    should "specify signed or unsgined to read" do
+      result = ByteBuffer::Result.new "\xFF\xFE\xFD\xFC"
+
+      assert_equal "\xFF\xFE\xFD\xFC", result.to_s(:signed => false)
+      assert_equal "\xFF\xFE\xFD\xFC", result.to_s(:signed => true)
+
+      assert_equal 4244504319, result.to_i(:signed => false)
+      assert_equal -50462977, result.to_i(:signed => true)
+    end
+
+    should "specify combination of arguments" do
+      result = ByteBuffer::Result.new "\xFF\xFE\xFD\xFC"
+
+      assert_equal "\xFF\xFE", result.to_s(:bits => 16, :signed => false)
+      assert_equal "\xFF\xFE", result.to_s(:bits => 16, :signed => true)
+
+      assert_equal 65279, result.to_i(:bits => 16, :endian => :little_endian, :signed => false)
+      assert_equal -257, result.to_i(:bits => 16, :endian => :little_endian, :signed => true)
+      assert_equal 65534, result.to_i(:bits => 16, :endian => :big_endian, :signed => false)
+      assert_equal -2, result.to_i(:bits => 16, :endian => :big_endian, :signed => true)
+    end
   end
 end

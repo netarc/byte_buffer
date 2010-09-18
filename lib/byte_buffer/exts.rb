@@ -64,7 +64,7 @@ class ByteBuffer
   # 1-Byte Numbers
   define_type :byte do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(1)
+      byte_buffer.read(1).to_i
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('C')
@@ -72,7 +72,7 @@ class ByteBuffer
   end
   define_type :char do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(1)
+      byte_buffer.read(1).to_i(:signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('c')
@@ -82,7 +82,7 @@ class ByteBuffer
   # 2-Byte Numbers
   define_type :word do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(2)
+      byte_buffer.read(2).to_i
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('S')
@@ -90,7 +90,7 @@ class ByteBuffer
   end
   define_type :short do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(2)
+      byte_buffer.read(2).to_i(:signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('s')
@@ -100,7 +100,7 @@ class ByteBuffer
   # 4-Byte Numbers
   define_type :dword do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(4)
+      byte_buffer.read(4).to_i
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('L')
@@ -108,7 +108,7 @@ class ByteBuffer
   end
   define_type :long do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(4)
+      byte_buffer.read(4).to_i(:signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('l')
@@ -118,7 +118,7 @@ class ByteBuffer
   # 8-Byte Numbers
   define_type :dwordlong do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(8)
+      byte_buffer.read(8).to_i
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('Q')
@@ -126,7 +126,7 @@ class ByteBuffer
   end
   define_type :longlong do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(8)
+      byte_buffer.read(8).to_i(:signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_i].pack('q')
@@ -136,7 +136,7 @@ class ByteBuffer
   # Floats
   define_type :float do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(4)
+      byte_buffer.read(4).to_f
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_f].pack('e')
@@ -144,7 +144,7 @@ class ByteBuffer
   end
   define_type :double do |type|
     type.read = Proc.new do |byte_bufer, args|
-      byte_buffer.read(8)
+      byte_buffer.read(8).to_f
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write [data.to_f].pack('E')
