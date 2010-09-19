@@ -82,54 +82,54 @@ class ByteBuffer
   # 2-Byte Numbers
   define_type :word do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(2).to_i
+      byte_buffer.read(2)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('S')
+      byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('S')
     end
   end
   define_type :short do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(2).to_i(:signed => true)
+      byte_buffer.read(2, :signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('s')
+      byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('s')
     end
   end
 
   # 4-Byte Numbers
   define_type :dword do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4).to_i
+      byte_buffer.read(4)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('L')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('L')
     end
   end
   define_type :long do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4).to_i(:signed => true)
+      byte_buffer.read(4, :signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('l')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('l')
     end
   end
 
   # 8-Byte Numbers
   define_type :dwordlong do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8).to_i
+      byte_buffer.read(8)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('Q')
+      byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_i].pack('Q')
     end
   end
   define_type :longlong do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8).to_i(:signed => true)
+      byte_buffer.read(8, :signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_i].pack('q')
+      byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_i].pack('q')
     end
   end
 
@@ -139,7 +139,7 @@ class ByteBuffer
       byte_buffer.read(4).to_f
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_f].pack('e')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_f].pack('e')
     end
   end
   define_type :double do |type|
@@ -147,7 +147,7 @@ class ByteBuffer
       byte_buffer.read(8).to_f
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write [data.to_f].pack('E')
+      byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_f].pack('E')
     end
   end
 end

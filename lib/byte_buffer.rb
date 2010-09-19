@@ -66,6 +66,10 @@ class ByteBuffer
   end
   alias :to_s buffer
 
+  def ==(other)
+    self.to_s == other
+  end
+
   def size
     @buffer.length
   end
