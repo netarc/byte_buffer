@@ -6,6 +6,7 @@ class ByteBuffer
       raise Errors::CannotReadInWriteMode.new
     else
       @mode = :read
+      @pos = 0
     end
   end
   private :ensure_read_mode

@@ -6,14 +6,20 @@ class ByteBuffer
       raise Errors::CannotWriteInReadMode.new
     else
       @mode = :write
+      @pos = @buffer.size
     end
   end
   private :ensure_write_mode
 
   def write(data)
     ensure_write_mode
-    @buffer <<= format_data(data)
-    @pos = @buffer.length
+    data = format_data(data)
+    if @pos <= 0
+      @buffer = data + @buffer
+    else
+      @buffer = @buffer[0..@pos-1] + data + @buffer[@pos..-1]
+    end
+    @pos += data.size
     self
   end
 
