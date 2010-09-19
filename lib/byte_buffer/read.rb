@@ -10,7 +10,7 @@ class ByteBuffer
   end
   private :ensure_read_mode
 
-  def read(bytes_to_read=nil, pad_bytes=false)
+  def read(bytes_to_read=-1)
     ensure_read_mode
 
     bytes_to_read||= 0
@@ -22,11 +22,8 @@ class ByteBuffer
       data = @buffer[@pos..-1]
       @pos = @buffer.length
     else
-      data = @buffer[@pos...@pos+bytes_to_read] || ""
-      # Didn't have enough to read? pad it out with zeroes
-      while pad_bytes and data.length < bytes_to_read
-        data <<= "\x00"
-      end
+      raise Errors::BufferUnderflow.new(:bytes => bytes_to_read) if @pos+bytes_to_read > self.size
+      data = @buffer[@pos...@pos+bytes_to_read]
       @pos += bytes_to_read
     end
     return Result.new data, :endian => @endian

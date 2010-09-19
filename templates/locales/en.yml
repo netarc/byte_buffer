@@ -5,6 +5,7 @@ en:
 # Translations for exception classes
 #-------------------------------------------------------------------------------
     errors:
+      buffer_underflow: "Unexpected end of Buffer encountered while attempting to read %{bytes} byte(s)"
       cannot_write_in_read_mode: Cannot write to Buffer while in a read state.
       cannot_read_in_write_mode: Cannot read from Buffer while in a write state.
       expected_integer: "Expected argument to be an Integer not `%{klass}`"

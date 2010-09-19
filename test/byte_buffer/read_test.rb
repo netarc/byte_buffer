@@ -31,10 +31,14 @@ class ReadTest < Test::Unit::TestCase
       assert_equal "", bb.read
     end
 
-    should "read specified amount of bytes and pad if requested" do
+    should "reading past the end of buffer should yield error" do
       bb = ByteBuffer.new("FOOBAR")
-      assert_equal "FOOBAR\x00\x00", bb.read(8, true)
-      assert_equal "\x00\x00", bb.read(2, true)
+      assert_equal "FOO", bb.read(3)
+      assert_equal "BAR", bb.read(3)
+      assert_raises(ByteBuffer::Errors::BufferUnderflow) do
+        bb.read(3)
+      end
     end
+
   end
 end
