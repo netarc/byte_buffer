@@ -13,6 +13,7 @@ class BaseTest < Test::Unit::TestCase
       assert_equal ByteBuffer.endian, bb.endian
       ByteBuffer.endian = :big_endian
       assert_equal :little_endian, bb.endian
+      ByteBuffer.endian = :little_endian
     end
 
     should "not be in read or write mode" do
