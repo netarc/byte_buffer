@@ -150,5 +150,4 @@ class ByteBuffer
       byte_buffer.write [data.to_f].pack('E')
     end
   end
-
 end

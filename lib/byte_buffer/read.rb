@@ -32,17 +32,6 @@ class ByteBuffer
     return Result.new data, :endian => @endian
   end
 
-  def read_byte_val(allow_nil=true)
-    ensure_read_mode
-
-    v = read(1)
-    if v.empty?
-      return nil if allow_nil
-      return 0
-    end
-    return v.to_i
-  end
-
   def read_bits(bits_toread)
     ensure_read_mode
 
@@ -52,7 +41,7 @@ class ByteBuffer
       bits = 8 - @bit_pos
       # If bit_pos is zero then we need to read another byte and no mask
       if @bit_pos == 0
-        @bit_byte = read_byte_val(false)
+        @bit_byte = read_byte
         mask = nil
       else
         mask = (1 << bits) - 1
