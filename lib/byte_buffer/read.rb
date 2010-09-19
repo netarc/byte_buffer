@@ -11,8 +11,10 @@ class ByteBuffer
   end
   private :ensure_read_mode
 
-  def read(bytes_to_read=-1)
+  def read(bytes_to_read=-1, options=nil)
     ensure_read_mode
+
+    options||={}
 
     bytes_to_read||= 0
     unless bytes_to_read.is_a?(Integer)
@@ -27,7 +29,7 @@ class ByteBuffer
       data = @buffer[@pos...@pos+bytes_to_read]
       @pos += bytes_to_read
     end
-    return Result.new data, :endian => @endian
+    return Result.new data, {:endian => @endian}.merge(options)
   end
 
   def read_bits(bits_toread)

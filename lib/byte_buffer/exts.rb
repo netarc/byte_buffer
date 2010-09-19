@@ -64,7 +64,7 @@ class ByteBuffer
   # 1-Byte Numbers
   define_type :byte do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(1).to_i
+      byte_buffer.read(1)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('C')
@@ -72,7 +72,7 @@ class ByteBuffer
   end
   define_type :char do |type|
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(1).to_i(:signed => true)
+      byte_buffer.read(1, :signed => true)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('c')

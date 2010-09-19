@@ -1,7 +1,8 @@
 class ByteBuffer
   class Result
-    def initialize(data, *args)
+    def initialize(data, args=nil)
       args||={}
+      @settings = {}.merge(args)
       if data.is_a?(String)
         @data = data.unpack('C*')
       elsif data.is_a?(Array)
@@ -99,8 +100,8 @@ class ByteBuffer
     def process_args(args={})
       options = {
         :bits_to_sample => args[:bits] || (self.size * 8),
-        :endian => args[:endian] == :big_endian ? :big_endian : :little_endian,
-        :signed => !!args[:signed]
+        :endian => [@settings[:endian], args[:endian]].compact.last == :big_endian ? :big_endian : :little_endian,
+        :signed => !![@settings[:signed], args[:signed]].compact.last
       }
       options[:bytes_to_sample] = (options[:bits_to_sample] / 8.0).ceil
       options[:byte_sample] = @data[0..(options[:bytes_to_sample] - 1)]
