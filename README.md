@@ -32,9 +32,14 @@ Want to have your own custom types? No problem! Simple as including in your proj
       define_type :dbl_null_string do |type|
         type.read = Proc.new do |byte_buffer, args|
           result = ""
+          cnt = 0
           while true
             byte = byte_buffer.read(1).to_s
-            break if byte.empty? || byte == "\x00"
+            if byte == "\x00"
+              cnt+=1
+              break if cnt >= 2
+              next
+            end
             result <<= byte
           end
           result
