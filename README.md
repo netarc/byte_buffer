@@ -58,3 +58,23 @@ Then just use elsewhere:
     bb.write_dbl_null_string "FOOBAR"
     ...
     my_custom_title = bb.read_dbl_null_string
+
+## Out of the box types:
+
+    string
+    null_string
+
+    byte
+    char
+
+    word
+    short
+
+    dword
+    long
+
+    dwordlong
+    longlong
+
+    float
+    double
