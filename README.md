@@ -10,7 +10,46 @@ Simply:
 
     gem install byte_buffer
 
-## Getting Started Guide
+Then just begin working with the Buffer with something like:
 
-TODO
+    bb = ByteBuffer.new
+    bb.write_null_string "FOOBAR"
+    bb.write_word 23
 
+    file.write bb.buffer
+
+Or maybe for reading data from our output above:
+
+    bb = ByteBuffer.new(file.read)
+    title = bb.read_null_string     # => FOOBAR
+    count = bb.read_word            # => 23
+
+## Extendable
+
+Want to have your own custom types? No problem! Simple as including in your project at startup:
+
+    class Bytebuffer
+      define_type :dbl_null_string do |type|
+        type.read = Proc.new do |byte_buffer, args|
+          result = ""
+          while true
+            byte = byte_buffer.read(1).to_s
+            break if byte.empty? || byte == "\x00"
+            result <<= byte
+          end
+          result
+        end
+        type.write = Proc.new do |byte_buffer, data|
+          byte_buffer.write data
+          byte_buffer.write 0x00
+          byte_buffer.write 0x00
+        end
+      end
+    end
+
+Then just use elsewhere:
+
+    bb = ByteBuffer.new(...)
+    bb.write_dbl_null_string "FOOBAR"
+    ...
+    my_custom_title = bb.read_dbl_null_string
