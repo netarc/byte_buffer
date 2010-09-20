@@ -144,4 +144,27 @@ class ExtTest < Test::Unit::TestCase
       assert_equal "FOO!\xFF\xFE\xFD\xFC", bb.buffer
     end
   end
+
+  context "float and double" do
+    should "read" do
+      bb = ByteBuffer.new("\347\207EA\347\207\305B")
+      assert_in_delta 12.3456789, bb.read_float, 0.1e-4
+      assert_in_delta 98.7654321, bb.read_float, 0.1e-4
+
+      bb = ByteBuffer.new("\242\325$\323\374\260(@")
+      assert_equal 12.3456789, bb.read_double
+    end
+    should "write" do
+      bb = ByteBuffer.new
+
+      bb.write_float 12.3456789
+      bb.write_float 98.7654321
+      assert_equal "\347\207EA\347\207\305B", bb.buffer
+
+      bb.reset!
+
+      bb.write_double 12.3456789
+      assert_equal "\242\325$\323\374\260(@", bb.buffer
+    end
+  end
 end
