@@ -61,20 +61,24 @@ Then just use elsewhere:
 
 ## Out of the box types:
 
-    string
-    null_string
+    misc
+      string
+      null_string
 
-    byte
-    char
+    8bit
+      uint8 => byte
+      int8 => char
 
-    word
-    short
+    16bit
+      uint16 => word
+      int16 => short
 
-    dword
-    long
+    32bit
+      uint32 => dword
+      int32 => long
+      float
 
-    dwordlong
-    longlong
-
-    float
-    double
+    64bit
+      uint64 => dwordlong
+      int64 => longlong
+      double
