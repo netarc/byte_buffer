@@ -29,25 +29,20 @@ Or maybe for reading data from our output above:
 Want to have your own custom types? No problem! Simple as including in your project at startup:
 
     class Bytebuffer
-      define_type :dbl_null_string do |type|
+      define_type :quad_byte do |type|
         type.read = Proc.new do |byte_buffer, args|
           result = ""
-          cnt = 0
-          while true
-            byte = byte_buffer.read(1).to_s
-            if byte == "\x00"
-              cnt+=1
-              break if cnt >= 2
-              next
-            end
-            result <<= byte
-          end
+          result << byte_buffer.read_byte
+          result << byte_buffer.read_byte
+          result << byte_buffer.read_byte
+          result << byte_buffer.read_byte
           result
         end
         type.write = Proc.new do |byte_buffer, data|
-          byte_buffer.write data
-          byte_buffer.write 0x00
-          byte_buffer.write 0x00
+          byte_buffer.write_byte data[0]
+          byte_buffer.write_byte data[1]
+          byte_buffer.write_byte data[2]
+          byte_buffer.write_byte data[3]
         end
       end
     end
@@ -55,9 +50,11 @@ Want to have your own custom types? No problem! Simple as including in your proj
 Then just use elsewhere:
 
     bb = ByteBuffer.new(...)
-    bb.write_dbl_null_string "FOOBAR"
+    bb.write_quad_byte "FOO!"
+    bb.write_quad_byte "BAR!"
     ...
-    my_custom_title = bb.read_dbl_null_string
+    bb.read_quad_byte => "FOO!"
+    bb.read_quad_byte => "BAR!"
 
 ## Out of the box types:
 
