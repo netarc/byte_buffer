@@ -181,4 +181,11 @@ class ExtTest < Test::Unit::TestCase
       assert_equal "\321", bb.to_s
     end
   end
+
+  context "extension types" do
+    should "retreive a list of defined types" do
+      assert ByteBuffer.known_types.include?(:uint8)
+      assert !ByteBuffer.known_types.include?(:foo)
+    end
+  end
 end

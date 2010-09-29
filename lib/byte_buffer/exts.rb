@@ -12,7 +12,7 @@ class ByteBuffer
 
   class << self
     def known_types
-      @types.keys
+      @@types.keys
     end
 
     def define_type(type_name, &block)
