@@ -35,9 +35,9 @@ class ExtTest < Test::Unit::TestCase
   context "uint8 and int8" do
     should "read" do
       bb = ByteBuffer.new("FOO\xFF\xFE\xFD")
-      assert_equal "F", bb.read_uint8
-      assert_equal "O", bb.read_int8
-      assert_equal "O", bb.read_uint8
+      assert_equal 70, bb.read_uint8
+      assert_equal 79, bb.read_int8
+      assert_equal 79, bb.read_uint8
       assert_equal 255, bb.read_uint8
       assert_equal -2, bb.read_int8
       assert_equal 253, bb.read_uint8
@@ -58,13 +58,13 @@ class ExtTest < Test::Unit::TestCase
   context "uint16 and int16" do
     should "read" do
       bb = ByteBuffer.new("FOO!\xFF\xFE\xFD\xFC")
-      assert_equal "FO", bb.read_uint16
-      assert_equal "O!", bb.read_uint16
+      assert_equal 20294, bb.read_uint16
+      assert_equal 8527, bb.read_uint16
       assert_equal 65279, bb.read_uint16
       assert_equal 64765, bb.read_uint16
       bb.rewind!
-      assert_equal "FO", bb.read_int16
-      assert_equal "O!", bb.read_int16
+      assert_equal 20294, bb.read_int16
+      assert_equal 8527, bb.read_int16
       assert_equal -257, bb.read_int16
       assert_equal -771, bb.read_int16
     end
@@ -90,10 +90,10 @@ class ExtTest < Test::Unit::TestCase
   context "uint32 and int32" do
     should "read" do
       bb = ByteBuffer.new("FOO!\xFF\xFE\xFD\xFC")
-      assert_equal "FOO!", bb.read_uint32
+      assert_equal 558845766, bb.read_uint32
       assert_equal 4244504319, bb.read_uint32
       bb.rewind!
-      assert_equal "FOO!", bb.read_int32
+      assert_equal 558845766, bb.read_int32
       assert_equal -50462977, bb.read_int32
     end
     should "write" do
@@ -114,11 +114,7 @@ class ExtTest < Test::Unit::TestCase
   context "uint64 and int64" do
     should "read" do
       bb = ByteBuffer.new("FOO!\xFF\xFE\xFD\xFC")
-      assert_equal "FOO!\xFF\xFE\xFD\xFC", bb.read_uint64
-      bb.rewind!
       assert_equal 18230007238394597190, bb.read_uint64
-      bb.rewind!
-      assert_equal "FOO!\xFF\xFE\xFD\xFC", bb.read_int64
       bb.rewind!
       assert_equal -216736835314954426, bb.read_int64
     end
@@ -172,8 +168,8 @@ class ExtTest < Test::Unit::TestCase
     should "foobar should be aliased to uint8" do
       ByteBuffer.alias_type :foobar, :uint8
 
-      bb = ByteBuffer.new("\123")
-      assert_equal "\123", bb.read_foobar
+      bb = ByteBuffer.new("\x83")
+      assert_equal 131, bb.read_foobar
 
       bb.reset!
       bb.write_foobar "\321"

@@ -1,9 +1,12 @@
 class ByteBuffer
 
   class Type
-    attr_accessor :read, :write
+    attr_accessor :read, :write, :conversion
     def initialize(type_name, &block)
       @type_name = type_name
+      @read = nil
+      @write = nil
+      @conversion = :to_i
       block.call(self)
     end
   end
@@ -13,6 +16,10 @@ class ByteBuffer
   class << self
     def known_types
       @@types.keys
+    end
+
+    def get_type(type_name)
+      @@types[type_name]
     end
 
     def define_type(type_name, &block)
@@ -34,7 +41,10 @@ class ByteBuffer
     def define_type_methods(type_name)
       define_method(:"read_#{type_name}") do |*args|
         read_method = @@types[type_name].read
-        read_method.call(self, *args)
+        conversion = @@types[type_name].conversion
+        result = read_method.call(self, *args)
+        result = result.send(conversion) unless conversion.nil?
+        result
       end
       define_method(:"write_#{type_name}") do |*args|
         write_method = @@types[type_name].write
@@ -46,8 +56,9 @@ class ByteBuffer
 
   # string is greedy, it will eat the whole buffer on a read
   define_type :string do |type|
+    type.conversion = :to_s
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read.to_s
+      byte_buffer.read
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data
@@ -56,6 +67,7 @@ class ByteBuffer
 
   # null-terminated string
   define_type :null_string do |type|
+    type.conversion = nil
     type.read = Proc.new do |byte_buffer, args|
       result = ""
       while true
@@ -156,16 +168,18 @@ class ByteBuffer
 
 
   define_type :float do |type|
+    type.conversion = :to_f
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4).to_f
+      byte_buffer.read(4)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_f].pack('e')
     end
   end
   define_type :double do |type|
+    type.conversion = :to_f
     type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8).to_f
+      byte_buffer.read(8)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_f].pack('E')
