@@ -54,6 +54,16 @@ class ByteBuffer
     private :define_type_methods
   end
 
+  define_type :bit do |type|
+    type.conversion = :to_i
+    type.read = Proc.new do |byte_buffer, args|
+      byte_buffer.read_bits(1)
+    end
+    type.write = Proc.new do |byte_buffer, data|
+      byte_buffer.write_bits(1, data)
+    end
+  end
+
   # string is greedy, it will eat the whole buffer on a read
   define_type :string do |type|
     type.conversion = :to_s

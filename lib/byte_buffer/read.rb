@@ -1,7 +1,6 @@
 class ByteBuffer
   def ensure_read_mode
     if is_reading?
-      reset_bit_byte
     elsif is_writing?
       raise Errors::CannotReadInWriteMode.new
     else
@@ -13,6 +12,7 @@ class ByteBuffer
 
   def read(bytes_to_read=-1, options=nil)
     ensure_read_mode
+    reset_bit_byte
 
     options||={}
 

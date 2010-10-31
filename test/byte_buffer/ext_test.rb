@@ -1,6 +1,41 @@
 require "test_helper"
 
 class ExtTest < Test::Unit::TestCase
+  context "bit" do
+    should "read" do
+      bb = ByteBuffer.new("\x05")
+      assert_equal 0, bb.read_bit
+      assert_equal 0, bb.read_bit
+      assert_equal 0, bb.read_bit
+      assert_equal 0, bb.read_bit
+      assert_equal 0, bb.read_bit
+      assert_equal 1, bb.read_bit
+      assert_equal 0, bb.read_bit
+      assert_equal 1, bb.read_bit
+    end
+
+    should "write" do
+      bb = ByteBuffer.new
+      bb.write_bits 8, 0x05
+
+      assert_equal "\x05", bb.buffer
+      assert_equal 1, bb.size
+
+      bb = ByteBuffer.new
+      bb.write_bits 1, 0
+      bb.write_bits 1, 0
+      bb.write_bits 1, 0
+      bb.write_bits 1, 0
+      bb.write_bits 1, 0
+      bb.write_bits 1, 1
+      bb.write_bits 1, 0
+      bb.write_bits 1, 1
+
+      assert_equal "\x05", bb.buffer
+      assert_equal 1, bb.size
+    end
+  end
+
   context "string extension" do
     should "read" do
       bb = ByteBuffer.new("FOOBAR")
