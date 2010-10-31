@@ -55,12 +55,12 @@ class ByteBuffer
   end
 
   define_type :bit do |type|
-    type.conversion = :to_i
+    type.conversion = nil
     type.read = Proc.new do |byte_buffer, args|
       byte_buffer.read_bits(1)
     end
     type.write = Proc.new do |byte_buffer, data|
-      data = !!data ? 1 : 0
+      data = !!data.to_s.match(/(true|t|yes|y|1)$/i) ? 1 : 0
       byte_buffer.write_bits(1, data)
     end
   end

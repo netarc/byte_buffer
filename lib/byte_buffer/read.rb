@@ -41,7 +41,7 @@ class ByteBuffer
       bits = 8 - @bit_pos
       # If bit_pos is zero then we need to read another byte and no mask
       if @bit_pos == 0
-        @bit_byte = read_byte
+        @bit_byte = read(1).to_i
         mask = nil
       else
         mask = (1 << bits) - 1
