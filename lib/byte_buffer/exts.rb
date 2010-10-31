@@ -60,6 +60,7 @@ class ByteBuffer
       byte_buffer.read_bits(1)
     end
     type.write = Proc.new do |byte_buffer, data|
+      data = !!data ? 1 : 0
       byte_buffer.write_bits(1, data)
     end
   end
