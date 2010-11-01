@@ -1,7 +1,7 @@
 class ByteBuffer
   def ensure_write_mode(reset_bit_byte=true)
     if is_writing?
-      reset_bit_byte if reset_bit_byte
+      reset_bit_byte! if reset_bit_byte
     elsif is_reading?
       raise Errors::CannotWriteInReadMode.new
     else
