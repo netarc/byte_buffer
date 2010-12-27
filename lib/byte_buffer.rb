@@ -120,6 +120,18 @@ class ByteBuffer
   end
   private :reset_bit_byte!
 
+  def step(bytes)
+    reset_bit_byte!
+    @pos += bytes
+    @pos = 0 if @pos < 0
+    bytes_over = @pos - @buffer.size
+    if bytes_over > 0
+      @pos = @buffer.size
+      unless is_reading?
+        1.upto(bytes_over) { write "\x00" }
+      end
+    end
+  end
 end
 
 # Default I18n to load the en locale

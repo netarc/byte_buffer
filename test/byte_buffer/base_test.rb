@@ -71,5 +71,44 @@ class BaseTest < Test::Unit::TestCase
       bb.fastforward!
       assert bb.size, bb.pos
     end
+
+    should "correctly step forward" do
+      bb = ByteBuffer.new("foobarzoo")
+
+      assert 0, bb.pos
+      assert_equal "foo", bb.read(3)
+
+      assert 3, bb.pos
+      bb.step 3
+
+      assert 6, bb.pos
+      assert_equal "zoo", bb.read(3)
+    end
+
+    should "correctly step backwards" do
+      bb = ByteBuffer.new("foobarzoo")
+
+      assert 0, bb.pos
+      assert_equal "foo", bb.read(3)
+
+      assert 3, bb.pos
+      bb.step -3
+
+      assert 0, bb.pos
+      assert_equal "foo", bb.read(3)
+    end
+
+    should "correctly pad buffer when stepping past in write mode" do
+      bb = ByteBuffer.new("")
+
+      bb.write "foo"
+      bb.step 2
+      bb.write "barz"
+      bb.step -2
+      bb.write "z"
+
+      assert 6, bb.pos
+      assert_equal "foo\x00\x00bazrz", bb.buffer
+    end
   end
 end
