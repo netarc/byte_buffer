@@ -40,10 +40,11 @@ class ByteBuffer
 
     def define_type_methods(type_name)
       define_method(:"read_#{type_name}") do |*args|
+        options = args[0] || {}
         read_method = @@types[type_name].read
         conversion = @@types[type_name].conversion
-        result = read_method.call(self, *args)
-        result = result.send(conversion, *args) unless conversion.nil?
+        result = read_method.call(self, options)
+        result = result.send(conversion) unless conversion.nil?
         result
       end
       define_method(:"write_#{type_name}") do |*args|
@@ -56,7 +57,7 @@ class ByteBuffer
 
   define_type :bit do |type|
     type.conversion = nil
-    type.read = Proc.new do |byte_buffer, args|
+    type.read = Proc.new do |byte_buffer, opts|
       byte_buffer.read_bits(1)
     end
     type.write = Proc.new do |byte_buffer, data|
@@ -68,7 +69,7 @@ class ByteBuffer
   # string is greedy, it will eat the whole buffer on a read
   define_type :string do |type|
     type.conversion = :to_s
-    type.read = Proc.new do |byte_buffer, args|
+    type.read = Proc.new do |byte_buffer, opts|
       byte_buffer.read
     end
     type.write = Proc.new do |byte_buffer, data|
@@ -79,7 +80,7 @@ class ByteBuffer
   # null-terminated string
   define_type :null_string do |type|
     type.conversion = nil
-    type.read = Proc.new do |byte_buffer, args|
+    type.read = Proc.new do |byte_buffer, opts|
       result = ""
       while true
         byte = byte_buffer.read(1).to_s
@@ -95,8 +96,8 @@ class ByteBuffer
   end
 
   define_type :uint8 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(1)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(1, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('C')
@@ -105,8 +106,8 @@ class ByteBuffer
   alias_type :byte, :uint8
 
   define_type :int8 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(1, :signed => true)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(1, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0] : [data.to_i].pack('c')
@@ -116,8 +117,8 @@ class ByteBuffer
 
 
   define_type :uint16 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(2)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(2, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('S')
@@ -126,8 +127,8 @@ class ByteBuffer
   alias_type :word, :uint16
 
   define_type :int16 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(2, :signed => true)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(2, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('s')
@@ -137,8 +138,8 @@ class ByteBuffer
 
 
   define_type :uint32 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(4, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('L')
@@ -147,8 +148,8 @@ class ByteBuffer
   alias_type :dword, :uint32
 
   define_type :int32 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4, :signed => true)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(4, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('l')
@@ -158,8 +159,8 @@ class ByteBuffer
 
 
   define_type :uint64 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(8, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_i].pack('Q')
@@ -168,8 +169,8 @@ class ByteBuffer
   alias_type :dwordlong, :uint64
 
   define_type :int64 do |type|
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8, :signed => true)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(8, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_i].pack('q')
@@ -180,8 +181,8 @@ class ByteBuffer
 
   define_type :float do |type|
     type.conversion = :to_f
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(4)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(4, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_f].pack('e')
@@ -189,8 +190,8 @@ class ByteBuffer
   end
   define_type :double do |type|
     type.conversion = :to_f
-    type.read = Proc.new do |byte_buffer, args|
-      byte_buffer.read(8)
+    type.read = Proc.new do |byte_buffer, opts|
+      byte_buffer.read(8, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
       byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_f].pack('E')

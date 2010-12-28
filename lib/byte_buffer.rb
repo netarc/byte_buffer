@@ -1,4 +1,5 @@
 require 'i18n'
+require 'pathname'
 
 class ByteBuffer
   autoload :Errors,        'byte_buffer/errors'

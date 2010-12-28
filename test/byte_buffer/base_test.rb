@@ -67,34 +67,34 @@ class BaseTest < Test::Unit::TestCase
     should "be at end of buffer on a fast-forward" do
       bb = ByteBuffer.new("some foobar data")
 
-      assert 0, bb.pos
+      assert_equal 0, bb.pos
       bb.fastforward!
-      assert bb.size, bb.pos
+      assert_equal bb.size, bb.pos
     end
 
     should "correctly step forward" do
       bb = ByteBuffer.new("foobarzoo")
 
-      assert 0, bb.pos
+      assert_equal 0, bb.pos
       assert_equal "foo", bb.read(3)
 
-      assert 3, bb.pos
+      assert_equal 3, bb.pos
       bb.step 3
 
-      assert 6, bb.pos
+      assert_equal 6, bb.pos
       assert_equal "zoo", bb.read(3)
     end
 
     should "correctly step backwards" do
       bb = ByteBuffer.new("foobarzoo")
 
-      assert 0, bb.pos
+      assert_equal 0, bb.pos
       assert_equal "foo", bb.read(3)
 
-      assert 3, bb.pos
+      assert_equal 3, bb.pos
       bb.step -3
 
-      assert 0, bb.pos
+      assert_equal 0, bb.pos
       assert_equal "foo", bb.read(3)
     end
 
@@ -107,7 +107,7 @@ class BaseTest < Test::Unit::TestCase
       bb.step -2
       bb.write "z"
 
-      assert 6, bb.pos
+      assert_equal 8, bb.pos
       assert_equal "foo\x00\x00bazrz", bb.buffer
     end
   end
