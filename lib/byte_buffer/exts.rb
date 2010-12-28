@@ -43,7 +43,7 @@ class ByteBuffer
         read_method = @@types[type_name].read
         conversion = @@types[type_name].conversion
         result = read_method.call(self, *args)
-        result = result.send(conversion) unless conversion.nil?
+        result = result.send(conversion, *args) unless conversion.nil?
         result
       end
       define_method(:"write_#{type_name}") do |*args|
