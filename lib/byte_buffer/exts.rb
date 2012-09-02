@@ -121,7 +121,7 @@ class ByteBuffer
       byte_buffer.read(2, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('S')
+      byte_buffer.write data.is_a?(String) ? data[0..1] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('n') : [data.to_i].pack('v'))
     end
   end
   alias_type :word, :uint16
@@ -131,7 +131,7 @@ class ByteBuffer
       byte_buffer.read(2, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..1] : [data.to_i].pack('s')
+      byte_buffer.write data.is_a?(String) ? data[0..1] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('n') : [data.to_i].pack('v'))
     end
   end
   alias_type :short, :int16
@@ -142,7 +142,7 @@ class ByteBuffer
       byte_buffer.read(4, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('L')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('N') : [data.to_i].pack('V'))
     end
   end
   alias_type :dword, :uint32
@@ -152,7 +152,7 @@ class ByteBuffer
       byte_buffer.read(4, opts.merge({:signed => true}))
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_i].pack('l')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('N') : [data.to_i].pack('V'))
     end
   end
   alias_type :long, :int32
@@ -185,7 +185,7 @@ class ByteBuffer
       byte_buffer.read(4, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..3] : [data.to_f].pack('e')
+      byte_buffer.write data.is_a?(String) ? data[0..3] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('g') : [data.to_i].pack('e'))
     end
   end
   define_type :double do |type|
@@ -194,7 +194,7 @@ class ByteBuffer
       byte_buffer.read(8, opts)
     end
     type.write = Proc.new do |byte_buffer, data|
-      byte_buffer.write data.is_a?(String) ? data[0..7] : [data.to_f].pack('E')
+      byte_buffer.write data.is_a?(String) ? data[0..7] : (byte_buffer.endian == :big_endian ? [data.to_i].pack('E') : [data.to_i].pack('G'))
     end
   end
 end
