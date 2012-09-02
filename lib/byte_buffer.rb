@@ -133,6 +133,11 @@ class ByteBuffer
       end
     end
   end
+
+  def trim!
+    @buffer = @buffer[@pos..-1]
+    rewind!
+  end
 end
 
 # Default I18n to load the en locale
